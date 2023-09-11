@@ -3,8 +3,26 @@ import "./Board.css";
 import Square from "./Square";
 
 class Board extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      squares: Array(9).fill(null),
+    };
+  }
+  handleClick(i) {
+    const squares = this.state.squares.slice(); // 원본 배열 손상없이 수정하기 위해 slice()로 복제
+    squares[i] = "X";
+    this.setState({ squares: squares }, () => {
+      console.log(this.state.squares); // sqaure 변화를 콘솔로 확인하기 위한 콜백함수
+    });
+  }
   renderSquare(i) {
-    return <Square />;
+    return (
+      <Square
+        value={this.state.squares[i]}
+        onClick={() => this.handleClick(i)}
+      />
+    );
   }
   render() {
     return (
