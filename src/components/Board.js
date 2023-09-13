@@ -6,7 +6,7 @@ const Board = ({ squares, handleClick }) => {
     return <Square value={squares[i]} onClick={() => handleClick(i)} />;
   };
   return (
-    <div>
+    <div className="board-wrapper">
       <div className="board-row">
         {renderSquare(0)}
         {renderSquare(1)}
