@@ -5,7 +5,8 @@ import Board from "./components/Board";
 function App() {
   const [history, setHistory] = useState([{ squares: Array(9).fill(null) }]);
   const [xIsNext, setXIsNext] = useState(true);
-  const current = history[history.length - 1];
+  const [stepNumber, setStepNumber] = useState(0);
+  const current = history[stepNumber];
   const calculateWinner = (squares) => {
     const lines = [
       [0, 1, 2],
@@ -37,15 +38,30 @@ function App() {
     status = `Next player: ${xIsNext ? "X" : "O"}`;
   }
   const handleClick = (i) => {
-    const newSquares = current.squares.slice(); // 원본 배열 손상없이 수정하기 위해 slice()로 복제
+    const newHistory = history.slice(0, stepNumber + 1);
+    const newCurrent = newHistory[newHistory.length - 1];
+    const newSquares = newCurrent.squares.slice();
     if (calculateWinner(newSquares) || newSquares[i]) {
       return;
     }
     newSquares[i] = xIsNext ? "X" : "O";
-    setHistory([...history, { squares: newSquares }]);
+    setHistory([...newHistory, { squares: newSquares }]);
     setXIsNext((prev) => !prev);
+    setStepNumber(newHistory.length);
   };
-  console.log(history);
+
+  const jumpTo = (step) => {
+    setStepNumber(step);
+    setXIsNext(step % 2 === 0);
+  };
+  const moves = history.map((step, move) => {
+    const desc = move ? "Go to move #" + move : "Go to game start";
+    return (
+      <li key={move}>
+        <button onClick={() => jumpTo(move)}>{desc}</button>
+      </li>
+    );
+  });
 
   return (
     <div className="game">
@@ -54,6 +70,7 @@ function App() {
       </div>
       <div className="game-info">
         <div className="status">{status}</div>
+        <ol>{moves}</ol>
       </div>
     </div>
   );
